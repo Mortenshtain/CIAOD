@@ -1,0 +1,39 @@
+#include <iostream>
+#include <chrono>
+#include <cmath>
+using namespace std;
+int main() {
+    for(int z=2; z<7; z++)
+    {
+    	int n = pow(10, z);
+    	int comparisons;
+    	int swaps;
+    	int* A = new int[n];
+    
+    	for (int i = 0; i < n; i++)
+    		A[i] = std::rand();
+    
+    	int d = n / 2;
+    	auto start = std::chrono::steady_clock::now();
+    	while (d > 0) {
+    		for (int i = 0; i < n - d; i++) {
+    			for(int j= i; j >= 0 && A[j] > A[j + d]; j--) 
+    			{
+    				comparisons++;
+    				swap(A[j], A[j + d]);
+    				swaps++;
+    			}
+    			comparisons++;
+    		}
+    		d /= 2;
+    	}
+    
+    	auto end = chrono::steady_clock::now();
+    	auto work_time = chrono::duration_cast<chrono::milliseconds>(end - start);
+    	cout << "n = " << n << "   ";
+    	cout << "time = " << work_time.count() << " milliseconds" << "   ";
+    	cout << " comparisons = " << comparisons << "   ";
+    	cout << "swaps = " << swaps << endl;
+
+    }
+}
