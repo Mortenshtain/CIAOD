@@ -1,0 +1,102 @@
+#include <iostream>
+#include <cmath>
+#include <chrono>
+
+
+int comparisons=0, swaps=0;
+
+template<class T> void Merge(T const *const A, int const nA, T const *const B, int const nB, T *const C)
+{
+
+    int a(0), b(0);
+
+    while( a+b < nA+nB )
+    {
+        comparisons++;
+        swaps++;
+        if( (b>=nB) || ( (a<nA) && (A[a]<=B[b]) ) )
+        {
+            C[a+b] = A[a];
+            ++a;
+        } else {
+            C[a+b] = B[b];
+            ++b;
+        }
+    }
+}
+
+template<class T> void NaturalSort(T *&A, int const n)
+{ 
+   comparisons = 0;
+   swaps = 0;
+   
+    T *B( new T[n]); 
+
+    while(true) 
+    {           
+        int start1    ,end1    ; 
+        int start2(-1),end2(-1); 
+       
+        while(true)
+        { 
+            start1 = end2+1; end1 = start1;
+            while( (end1<n-1) && (A[end1]<=A[end1+1]) )
+            {
+                comparisons++;
+                ++end1;
+            }
+            comparisons++;
+            if( end1 == n-1 ) break;
+            start2 = end1+1, end2 = start2;
+            while( (end2<n-1) && (A[end2]<=A[end2+1]) )
+            {
+                comparisons++;
+                ++end2;
+            }
+            Merge(A+start1, end1-start1+1, A+start2, end2-start2+1, B+start1);
+            comparisons++;
+            if( end2 == n-1 ) break;
+        }
+        comparisons++;
+        if( (start1==0) && (end1==n-1) ) break;
+        if( end1 == n-1 )
+        {
+            for(; start1<n; ++start1)
+            {
+                B[start1]=A[start1];
+                swaps++;    
+            }    
+        }
+
+        T *temp(B); B=A; A=temp;
+    }
+
+    delete B;
+}
+
+
+
+
+using namespace std;
+
+int main()
+{
+    for(int z=2; z<7; z++)
+    {
+        int n =pow(10, z);
+        int* A = new int[n];
+        for(int i=0; i<n; i++)
+        {
+            A[i]=rand();
+        }
+        auto start = chrono::steady_clock::now();
+        NaturalSort(A, n);
+        auto end = chrono::steady_clock::now();
+        auto work_time = chrono::duration_cast<chrono::milliseconds>(end - start);
+        cout << "n = " << n << "   ";
+        cout << " time = " << work_time.count() << "   ";
+        cout << "comparisons = " << comparisons << "   ";
+        cout << "swaps = " << swaps << endl;
+    }
+    return 0;
+}
