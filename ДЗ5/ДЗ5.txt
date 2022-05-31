@@ -1,0 +1,138 @@
+#include <iostream>
+
+using namespace std;
+
+int comparisons = 0;
+
+class Binary_tree
+{
+private:
+	int value;
+	Binary_tree* left = nullptr;
+	Binary_tree* right = nullptr;
+public:
+	~Binary_tree()
+	{
+		if (left != nullptr)
+		{
+			if (right != nullptr)
+			{
+				delete right;
+				right = nullptr;
+			}
+
+			delete left;
+			left = nullptr;
+		}
+	}
+
+	void Add_value(int x)
+	{
+		if (value)
+		{
+			value = x;
+		}
+		else if (x >= value)
+		{
+			if (right == nullptr)
+			{
+				right = new Binary_tree;
+				right->value = x;
+
+				return;
+			}
+
+			right->Add_value(x);
+		}
+		else
+		{
+			if (left == nullptr)
+			{
+				left = new Binary_tree;
+				left->value = x;
+
+				return;
+			}
+				
+			left->Add_value(x);
+		}
+	}
+	void Print_tree()
+	{
+		if (left != nullptr)
+		{
+			left->Print_tree();
+		}
+
+		cout << value << endl;
+		
+		if (right != nullptr)
+		{
+			right->Print_tree();
+		}
+	}
+
+	void Find_value(int x)
+	{
+		if (this == nullptr)
+		{
+			cout << "None" << endl;
+
+			return;
+		} 
+		else if (x == value)
+		{
+			cout << "Success" << endl;
+
+			return;
+		}
+		else
+		{
+			comparisons++;
+		}
+
+		if (x >= value)
+		{
+			right->Find_value(x);
+		}
+		else
+		{
+			left->Find_value(x);
+		}
+	}
+
+	int Get_comparisons()
+	{
+		return comparisons;
+	}
+
+};
+
+int main()
+{
+    cout << "enter the size:" << endl;
+	int n;
+	cin >> n;
+
+	int* arr = new int[n];
+
+	for (int i = 0; i < n; i++)
+	{
+		arr[i] = rand() % n+1;
+	}
+
+	Binary_tree* root = new Binary_tree();
+
+	for (int i = 0; i < n; i++)
+	{
+		root->Add_value(arr[i]);
+	}
+
+	cout << "input the value: ";
+	cin >> n;
+	
+	root->Find_value(n);
+	cout << "comparisons = " << root->Get_comparisons();
+
+	return 0;
+}
