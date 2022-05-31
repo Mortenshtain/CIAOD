@@ -1,0 +1,64 @@
+#define _CRT_SECURE_NO_WARNINGS 
+#include <vector>
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+
+
+using namespace std;
+
+string::size_type KMP(const string& S, int begin, const string& pattern)
+{
+	vector<int> p(pattern.length());
+
+	p[0] = 0;
+	for(int k = 0, i = 1; i < pattern.length(); ++i)
+	{
+		while((k > 0) && (pattern[i] != pattern[k]))
+			k = p[k - 1];
+
+		if(pattern[i] == pattern[k])
+			k++;
+
+		p[i] = k;
+	}
+
+	for(int k = 0, i = begin; i < S.length(); ++i)
+	{
+		while((k > 0) && (pattern[k] != S[i]))
+			k = p[k - 1];
+
+		if(pattern[k] == S[i])cout << i + 1 << "\t";
+		k++;
+
+		if(k == pattern.length())
+			return (i - pattern.length() + 1);
+        
+	}
+
+	return (string::npos);
+	cout << string::npos;
+}
+
+int main() {
+	string ss;
+	char arr[] = "";
+	setlocale(LC_ALL, "ru");
+
+	ifstream in("E:\\test.txt");
+	while(!in.eof()) {
+		ss = "";
+		getline(in, ss);
+	}
+	in.close();
+
+	string pattern = "get";
+	int begin = 1;
+
+	printf("\n");
+	KMP(ss, begin, pattern);
+	return 0;
+}
